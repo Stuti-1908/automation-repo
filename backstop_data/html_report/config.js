@@ -4,7 +4,7 @@ report({
     {
       "pair": {
         "reference": "..\\bitmaps_reference\\backstop_default_Home_Page_0_document_0_phone.png",
-        "test": "..\\bitmaps_test\\20250627-204212\\backstop_default_Home_Page_0_document_0_phone.png",
+        "test": "..\\bitmaps_test\\20250628-025901\\backstop_default_Home_Page_0_document_0_phone.png",
         "selector": "document",
         "fileName": "backstop_default_Home_Page_0_document_0_phone.png",
         "label": "Home Page",
@@ -14,23 +14,20 @@ report({
         "expect": 0,
         "viewportLabel": "phone",
         "diff": {
-          "isSameDimensions": false,
+          "isSameDimensions": true,
           "dimensionDifference": {
-            "width": -64,
-            "height": -229
+            "width": 0,
+            "height": 0
           },
-          "rawMisMatchPercentage": 55.91575575928538,
-          "misMatchPercentage": "55.92",
-          "analysisTime": 120
-        },
-        "diffImage": "..\\bitmaps_test\\20250627-204212\\failed_diff_backstop_default_Home_Page_0_document_0_phone.png"
+          "misMatchPercentage": "0.00"
+        }
       },
-      "status": "fail"
+      "status": "pass"
     },
     {
       "pair": {
         "reference": "..\\bitmaps_reference\\backstop_default_Home_Page_0_document_1_tablet.png",
-        "test": "..\\bitmaps_test\\20250627-204212\\backstop_default_Home_Page_0_document_1_tablet.png",
+        "test": "..\\bitmaps_test\\20250628-025901\\backstop_default_Home_Page_0_document_1_tablet.png",
         "selector": "document",
         "fileName": "backstop_default_Home_Page_0_document_1_tablet.png",
         "label": "Home Page",
@@ -45,18 +42,15 @@ report({
             "width": 0,
             "height": 0
           },
-          "rawMisMatchPercentage": 42.60495503743489,
-          "misMatchPercentage": "42.60",
-          "analysisTime": 136
-        },
-        "diffImage": "..\\bitmaps_test\\20250627-204212\\failed_diff_backstop_default_Home_Page_0_document_1_tablet.png"
+          "misMatchPercentage": "0.00"
+        }
       },
-      "status": "fail"
+      "status": "pass"
     },
     {
       "pair": {
         "reference": "..\\bitmaps_reference\\backstop_default_Settings_Page_0_document_0_phone.png",
-        "test": "..\\bitmaps_test\\20250627-204212\\backstop_default_Settings_Page_0_document_0_phone.png",
+        "test": "..\\bitmaps_test\\20250628-025901\\backstop_default_Settings_Page_0_document_0_phone.png",
         "selector": "document",
         "fileName": "backstop_default_Settings_Page_0_document_0_phone.png",
         "label": "Settings Page",
@@ -66,23 +60,22 @@ report({
         "expect": 0,
         "viewportLabel": "phone",
         "diff": {
-          "isSameDimensions": false,
+          "isSameDimensions": true,
           "dimensionDifference": {
-            "width": -64,
-            "height": -229
+            "width": 0,
+            "height": 0
           },
-          "rawMisMatchPercentage": 55.91575575928538,
-          "misMatchPercentage": "55.92",
-          "analysisTime": 143
-        },
-        "diffImage": "..\\bitmaps_test\\20250627-204212\\failed_diff_backstop_default_Settings_Page_0_document_0_phone.png"
+          "rawMisMatchPercentage": 0.006082725060827251,
+          "misMatchPercentage": "0.01",
+          "analysisTime": 61
+        }
       },
-      "status": "fail"
+      "status": "pass"
     },
     {
       "pair": {
         "reference": "..\\bitmaps_reference\\backstop_default_Settings_Page_0_document_1_tablet.png",
-        "test": "..\\bitmaps_test\\20250627-204212\\backstop_default_Settings_Page_0_document_1_tablet.png",
+        "test": "..\\bitmaps_test\\20250628-025901\\backstop_default_Settings_Page_0_document_1_tablet.png",
         "selector": "document",
         "fileName": "backstop_default_Settings_Page_0_document_1_tablet.png",
         "label": "Settings Page",
@@ -97,13 +90,10 @@ report({
             "width": 0,
             "height": 0
           },
-          "rawMisMatchPercentage": 42.60495503743489,
-          "misMatchPercentage": "42.60",
-          "analysisTime": 131
-        },
-        "diffImage": "..\\bitmaps_test\\20250627-204212\\failed_diff_backstop_default_Settings_Page_0_document_1_tablet.png"
+          "misMatchPercentage": "0.00"
+        }
       },
-      "status": "fail"
+      "status": "pass"
     }
   ],
   "id": "backstop_default"
