@@ -372,4 +372,3 @@ npx backstop test
 
 ---
 
-**Now, your tool will catch both selector changes and visual/UI regressions!**
