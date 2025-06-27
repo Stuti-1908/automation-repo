@@ -57,7 +57,7 @@ jobs:
           npx backstop test
 
       - name: Upload BackstopJS HTML report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: backstop-report
           path: automation/backstop_data/html_report/
