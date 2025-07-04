@@ -17,34 +17,51 @@ if (!fs.existsSync(baselinePath)) {
 const baseline = JSON.parse(fs.readFileSync(baselinePath, 'utf8'));
 const current = JSON.parse(fs.readFileSync(currentPath, 'utf8'));
 
+// Build lookup maps for selectors by id/class
+function buildSelectorMap(arr) {
+    const map = {};
+    arr.forEach(sel => {
+        if (sel.id) map[sel.id] = sel;
+        else if (sel.class) map[sel.class] = sel;
+    });
+    return map;
+}
+
+const baselineMap = buildSelectorMap(baseline);
+const currentMap = buildSelectorMap(current);
+
 const mapping = {};
 const added = [];
 const removed = [];
 
 console.log('\n🔍 Comparing selectors...');
 
-for (const oldSelector in baseline) {
-    if (!(oldSelector in current)) {
-        // Removed selector
-        removed.push(oldSelector);
-        mapping[oldSelector] = null;
-        console.log(`❌ REMOVED: ${oldSelector}`);
-    } else if (baseline[oldSelector] !== current[oldSelector]) {
-        // Changed selector
-        mapping[oldSelector] = current[oldSelector];
-        console.log(`🔄 CHANGED: ${oldSelector} → ${current[oldSelector]}`);
+// Check for removed or changed selectors
+for (const key in baselineMap) {
+    if (!(key in currentMap)) {
+        removed.push(key);
+        mapping[key] = null;
+        console.log(`❌ REMOVED: ${key}`);
     } else {
-        // No change
-        mapping[oldSelector] = current[oldSelector];
+        // Compare selector objects (shallow)
+        const oldSel = baselineMap[key];
+        const newSel = currentMap[key];
+        if (JSON.stringify(oldSel) !== JSON.stringify(newSel)) {
+            // Store only the selector string (id or class)
+            mapping[key] = newSel.id || newSel.class;
+            console.log(`🔄 CHANGED: ${key} → ${mapping[key]}`);
+        } else {
+            mapping[key] = newSel.id || newSel.class;
+        }
     }
 }
 
-for (const newSelector in current) {
-    if (!(newSelector in baseline)) {
-        // New selector added
-        added.push(newSelector);
-        mapping[`ADDED: ${newSelector}`] = current[newSelector];
-        console.log(`➕ ADDED: ${newSelector}`);
+// Check for added selectors
+for (const key in currentMap) {
+    if (!(key in baselineMap)) {
+        added.push(key);
+        mapping[`ADDED: ${key}`] = currentMap[key].id || currentMap[key].class;
+        console.log(`➕ ADDED: ${key}`);
     }
 }
 

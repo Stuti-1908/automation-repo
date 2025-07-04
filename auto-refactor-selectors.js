@@ -50,7 +50,9 @@ function refactorStepsFiles(dir) {
             const newSelector = mapping[oldSelector];
             if (newSelector && !oldSelector.startsWith('ADDED:')) {
                 console.log(`✅ Replacing selector in JS: ${oldSelector} → ${newSelector}`);
-                return `$('${newSelector}')`;
+                // Use the same quote style as the original match
+                const quote = match.includes('"') ? '"' : "'";
+                return `$(${quote}${newSelector}${quote})`;
             }
             return match;
         });
@@ -72,7 +74,9 @@ function refactorPageObjectFiles(dir) {
             const newSelector = mapping[oldSelector];
             if (newSelector && !oldSelector.startsWith('ADDED:')) {
                 console.log(`✅ Replacing selector in pageobject JS: ${oldSelector} → ${newSelector}`);
-                return `$('${newSelector}')`;
+                // Use the same quote style as the original match
+                const quote = match.includes('"') ? '"' : "'";
+                return `$(${quote}${newSelector}${quote})`;
             }
             return match;
         });

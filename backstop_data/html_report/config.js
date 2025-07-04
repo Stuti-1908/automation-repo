@@ -4,7 +4,7 @@ report({
     {
       "pair": {
         "reference": "..\\bitmaps_reference\\backstop_default_Home_Page_0_document_0_phone.png",
-        "test": "..\\bitmaps_test\\20250628-025901\\backstop_default_Home_Page_0_document_0_phone.png",
+        "test": "..\\bitmaps_test\\20250703-201635\\backstop_default_Home_Page_0_document_0_phone.png",
         "selector": "document",
         "fileName": "backstop_default_Home_Page_0_document_0_phone.png",
         "label": "Home Page",
@@ -14,20 +14,23 @@ report({
         "expect": 0,
         "viewportLabel": "phone",
         "diff": {
-          "isSameDimensions": true,
+          "isSameDimensions": false,
           "dimensionDifference": {
-            "width": 0,
-            "height": 0
+            "width": -64,
+            "height": -205
           },
-          "misMatchPercentage": "0.00"
-        }
+          "rawMisMatchPercentage": 20.296152676399025,
+          "misMatchPercentage": "20.30",
+          "analysisTime": 76
+        },
+        "diffImage": "..\\bitmaps_test\\20250703-201635\\failed_diff_backstop_default_Home_Page_0_document_0_phone.png"
       },
-      "status": "pass"
+      "status": "fail"
     },
     {
       "pair": {
         "reference": "..\\bitmaps_reference\\backstop_default_Home_Page_0_document_1_tablet.png",
-        "test": "..\\bitmaps_test\\20250628-025901\\backstop_default_Home_Page_0_document_1_tablet.png",
+        "test": "..\\bitmaps_test\\20250703-201635\\backstop_default_Home_Page_0_document_1_tablet.png",
         "selector": "document",
         "fileName": "backstop_default_Home_Page_0_document_1_tablet.png",
         "label": "Home Page",
@@ -50,7 +53,7 @@ report({
     {
       "pair": {
         "reference": "..\\bitmaps_reference\\backstop_default_Settings_Page_0_document_0_phone.png",
-        "test": "..\\bitmaps_test\\20250628-025901\\backstop_default_Settings_Page_0_document_0_phone.png",
+        "test": "..\\bitmaps_test\\20250703-201635\\backstop_default_Settings_Page_0_document_0_phone.png",
         "selector": "document",
         "fileName": "backstop_default_Settings_Page_0_document_0_phone.png",
         "label": "Settings Page",
@@ -67,7 +70,7 @@ report({
           },
           "rawMisMatchPercentage": 0.006082725060827251,
           "misMatchPercentage": "0.01",
-          "analysisTime": 61
+          "analysisTime": 116
         }
       },
       "status": "pass"
@@ -75,7 +78,7 @@ report({
     {
       "pair": {
         "reference": "..\\bitmaps_reference\\backstop_default_Settings_Page_0_document_1_tablet.png",
-        "test": "..\\bitmaps_test\\20250628-025901\\backstop_default_Settings_Page_0_document_1_tablet.png",
+        "test": "..\\bitmaps_test\\20250703-201635\\backstop_default_Settings_Page_0_document_1_tablet.png",
         "selector": "document",
         "fileName": "backstop_default_Settings_Page_0_document_1_tablet.png",
         "label": "Settings Page",

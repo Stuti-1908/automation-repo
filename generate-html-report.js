@@ -2,13 +2,13 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join } from 'path';
 
-export function generateHtmlReport(historyPath, outputPath) {
-    if (!existsSync(historyPath)) {
-        console.warn('⚠️ selector-history.json not found.');
+export function generateHtmlReport(mappingPath, outputPath) {
+    if (!existsSync(mappingPath)) {
+        console.warn('⚠️ selector-mapping.json not found.');
         return;
     }
 
-    const data = JSON.parse(readFileSync(historyPath, 'utf-8'));
+    const mapping = JSON.parse(readFileSync(mappingPath, 'utf-8'));
 
     let html = `
     <html>
@@ -29,22 +29,21 @@ export function generateHtmlReport(historyPath, outputPath) {
             <tbody>
     `;
 
-    if (data.removed) {
-        data.removed.forEach(sel => {
-            html += `<tr><td>Removed</td><td>${sel}</td><td>—</td></tr>`;
-        });
-    }
-
-    if (data.added) {
-        data.added.forEach(sel => {
-            html += `<tr><td>Added</td><td>—</td><td>${sel}</td></tr>`;
-        });
-    }
-
-    if (data.changed) {
-        for (const [oldSel, newSel] of Object.entries(data.changed)) {
-            html += `<tr><td>Changed</td><td>${oldSel}</td><td>${newSel}</td></tr>`;
+    let hasRows = false;
+    for (const [oldSel, newSel] of Object.entries(mapping)) {
+        if (oldSel.startsWith('ADDED: ')) {
+            html += `<tr><td>Added</td><td>—</td><td>${newSel.id || newSel.class || JSON.stringify(newSel)}</td></tr>`;
+            hasRows = true;
+        } else if (newSel === null) {
+            html += `<tr><td>Removed</td><td>${oldSel}</td><td>—</td></tr>`;
+            hasRows = true;
+        } else if (typeof newSel === 'object' && oldSel !== (newSel.id || newSel.class)) {
+            html += `<tr><td>Changed</td><td>${oldSel}</td><td>${newSel.id || newSel.class || JSON.stringify(newSel)}</td></tr>`;
+            hasRows = true;
         }
+    }
+    if (!hasRows) {
+        html += `<tr><td colspan="3" style="text-align:center;">No selector changes detected.</td></tr>`;
     }
 
     html += `

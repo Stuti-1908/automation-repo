@@ -9,11 +9,11 @@ class LoginPage extends Page {
      * define selectors using getter methods
      */
     get inputUsername () {
-        return $('#/* REMOVED: /* REMOVED: /* REMOVED: /* REMOVED: /* REMOVED: my_input */ */ */ */ */');
+        return $('#my-input');
     }
 
     get btnSubmit () {
-        return $('#/* REMOVED: /* REMOVED: /* REMOVED: /* REMOVED: /* REMOVED: my_button */ */ */ */ */');
+        return $('#my-button');
     }
 
     /**

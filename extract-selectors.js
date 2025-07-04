@@ -7,9 +7,14 @@ import { writeFileSync } from 'fs';
     const browser = await launch({ headless: 'new' });
     const page = await browser.newPage();
 
-    const url = 'http://localhost:5173'; // adjust if your vite port is different
+    const url = 'http://localhost:5173'; 
     console.log(`🔹 Navigating to ${url}...`);
     await page.goto(url, { waitUntil: 'networkidle2' });
+
+    // Click the settings toggle button to reveal settings panel
+    await page.waitForSelector('#settings-toggle');
+    await page.click('#settings-toggle');
+    await page.waitForSelector('#settings-panel'); // Wait for panel to appear
 
     console.log('🔹 Extracting selectors...');
     const selectors = await page.evaluate(() => {
@@ -43,7 +48,7 @@ import { writeFileSync } from 'fs';
     });
 
     // Save result
-    const outputPath = 'snapshots/baseline_selectors.json';
+    const outputPath = process.argv[2] || 'snapshots/baseline-selectors.json';
     writeFileSync(outputPath, JSON.stringify(selectors, null, 2));
     console.log(`✅ Selectors saved to ${outputPath} (${selectors.length} entries)`);
 
