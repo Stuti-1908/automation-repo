@@ -15,12 +15,14 @@
 cd automation
 npm install
 
+
 ```
 
 2. Take a baseline snapshot of all selectors (run once at project start):
 
 ```sh
 node extract-selectors.js snapshots/baseline-selectors.json DevAuto
+
 
 ```
 
@@ -33,12 +35,14 @@ Whenever there are UI changes or deployments:
 ```sh
 node extract-selectors.js snapshots/current-selectors.json
 
+
 ```
 
 2. **Compare selectors and update the HTML report:**
 
 ```sh
 node compare-selectors.js snapshots/baseline-selectors.json snapshots/current-selectors.json
+
 
 ```
 
@@ -47,6 +51,7 @@ node compare-selectors.js snapshots/baseline-selectors.json snapshots/current-se
 ```sh
 node auto-generate-mapping.js
 node auto-refactor-selectors.js selector-mapping.json
+
 
 ```
 
@@ -57,12 +62,14 @@ node auto-refactor-selectors.js selector-mapping.json
 ```sh
 node generate-test-skeletons.js
 
+
 ```
 
 - To generate feature/spec files for new selectors:
 
 ```sh
 node generate-test-skeletons.js --generate
+
 
 ```
 
@@ -71,12 +78,14 @@ node generate-test-skeletons.js --generate
 ```sh
 npm run test
 
+
 ```
 
 or use the all-in-one command:
 
 ```sh
 npm run check-ui
+
 
 ```
 
@@ -130,6 +139,7 @@ flowchart
 <input id="new_input_field" type="text" />
 <div class="copilot-bot">Hello, I am GitHub Copilot, your AI assistant!</div>
 
+
 ```
 
 2. Run the workflow as described above.
@@ -137,6 +147,7 @@ flowchart
 
 ```sh
 node generate-test-skeletons.js --generate
+
 
 ```
 
@@ -156,6 +167,7 @@ node generate-test-skeletons.js --generate
 ```sh
 git clone <your-app-git-url> ../development/clonedRepo/YourApp
 
+
 ```
 
 2. **Install dependencies and start the dev server:**
@@ -164,6 +176,7 @@ git clone <your-app-git-url> ../development/clonedRepo/YourApp
 cd ../development/clonedRepo/YourApp
 npm install
 npm run dev
+
 
 ```
 
@@ -183,6 +196,7 @@ const pages = [
 ];
 // rest as it is ...
 
+
 ```
 
 4. **Run the automation workflow as usual:**
@@ -198,12 +212,14 @@ node auto-refactor-selectors.js selector-mapping.json
 node generate-test-skeletons.js --generate   # (optional)
 npm run test
 
+
 ```
 
 - Or use:
 
 ```sh
 npm run check-ui
+
 
 ```
 
@@ -240,6 +256,7 @@ cd <repo_folder>
 # Install dependencies
 npm install
 
+
 ```
 
 ## 🚀 Usage
@@ -256,6 +273,7 @@ node extract-selectors.js
 # 3️⃣ Save as baseline
 cp snapshots/current-selectors.json snapshots/baseline-selectors.json
 
+
 ```
 
 ### Regular Run (After new deployments):
@@ -264,12 +282,6 @@ cp snapshots/current-selectors.json snapshots/baseline-selectors.json
 # One command runs everything:
 node run-all.js
 
-```
-
-Or:
-
-```bash
-npm run all
 
 ```
 
@@ -308,6 +320,7 @@ Add automated screenshot comparison to catch visual/UI changes that selector-bas
 npm install -g backstopjs
 cd automation
 npx backstop init
+
 ```
 
 ### 2. Configure BackstopJS
@@ -343,18 +356,21 @@ npx backstop init
   "report": ["browser", "CI"],
   "debug": false
 }
+
 ```
 
 ### 3. Create Baseline Screenshots
 
 ```sh
 npx backstop reference
+
 ```
 
 ### 4. Run Visual Regression Tests
 
 ```sh
 npx backstop test
+
 ```
 
 - If there are visual differences, BackstopJS will show a report in `backstop_data/html_report/index.html`.
@@ -368,6 +384,7 @@ npx backstop test
 "scripts": {
   "visual-test": "npx backstop test"
 }
+
 ```
 
 ---
