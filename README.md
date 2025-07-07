@@ -381,8 +381,10 @@ npx backstop test
 - Optionally, add a script in your `package.json`:
 
 ```json
-"scripts": {
-  "visual-test": "npx backstop test"
+{
+  "scripts": {
+    "visual-test": "npx backstop test"
+  }
 }
 
 ```
