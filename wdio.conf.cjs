@@ -1,4 +1,10 @@
 exports.config = {
+    autoCompileOpts: {
+    tsNodeOpts: {
+      transpileOnly: true,
+      project: './tsconfig.json'
+    },
+    },
     runner: 'local',
     specs: [
         './features/**/*.feature'

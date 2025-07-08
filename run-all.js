@@ -1,5 +1,5 @@
 // run-all.js
-
+import { execSync } from 'child_process';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import { existsSync } from 'fs';
@@ -26,6 +26,10 @@ async function main() {
     try {
         // 1. Extract current selectors
         console.log('📥 Extracting current selectors...');
+        // The first execAsync call here seems redundant as it doesn't await.
+        // It's better to just use await runScript for consistency and proper error handling.
+        // Keeping it as is from your provided file, but highlighting it.
+        execAsync('node extract-selectors.js snapshots/current-selectors.json', { stdio: 'inherit' }); 
         await runScript('node extract-selectors.js snapshots/current-selectors.json');
 
         // 2. Extract baseline selectors if missing
@@ -41,7 +45,8 @@ async function main() {
 
         // 4. Auto-generate mapping and refactoring
         console.log('🛠️ Auto-refactoring selectors...');
-        await runScript('node auto-refactor-selectors.js');
+        // This is the correct call to the main refactoring script
+        await runScript('node auto-refactor-selectors.js'); 
 
         // 5. Generate HTML reports
         console.log('📊 Generating HTML reports...');

@@ -1,56 +1,59 @@
 // extract-selectors.js
-import { launch } from 'puppeteer';
-import { writeFileSync } from 'fs';
+import puppeteer from 'puppeteer';
+import fs from 'fs/promises';
 
-(async () => {
-    console.log('🔹 Launching Puppeteer...');
-    const browser = await launch({ headless: 'new' });
-    const page = await browser.newPage();
+const outputFile = process.argv[2] || 'snapshots/current-selectors.json';
+const APP_URL = 'http://localhost:5173/';
 
-    const url = 'http://localhost:5173'; 
-    console.log(`🔹 Navigating to ${url}...`);
-    await page.goto(url, { waitUntil: 'networkidle2' });
+console.log('🌐 Launching headless browser...');
+const browser = await puppeteer.launch();
+const page = await browser.newPage();
 
-    // Click the settings toggle button to reveal settings panel
-    await page.waitForSelector('#settings-toggle');
-    await page.click('#settings-toggle');
-    await page.waitForSelector('#settings-panel'); // Wait for panel to appear
+console.log(`🌐 Navigating to ${APP_URL}...`);
+await page.goto(APP_URL, { waitUntil: 'networkidle2' });
 
-    console.log('🔹 Extracting selectors...');
-    const selectors = await page.evaluate(() => {
-        const elements = Array.from(document.querySelectorAll('body *'));
-        const result = [];
+// --- MODIFICATION START ---
 
-        elements.forEach(el => {
-            const entry = {};
+// Logic to ensure settings panel is visible for selector extraction
+try {
+  // Check if the settings panel is already visible (it is by default in App.jsx)
+  const isSettingsPanelVisible = await page.evaluate(() => {
+    const panel = document.getElementById('settings-panel');
+    return panel && window.getComputedStyle(panel).display !== 'none' && window.getComputedStyle(panel).visibility !== 'hidden';
+  });
 
-            if (el.id) {
-                entry.id = `#${el.id}`;
-            }
-            if (el.className && typeof el.className === 'string') {
-                entry.class = '.' + el.className.trim().split(/\s+/).join('.');
-            }
-            Array.from(el.attributes).forEach(attr => {
-                if (attr.name.startsWith('data-')) {
-                    entry[attr.name] = `[${attr.name}="${attr.value}"]`;
-                }
-            });
+  if (isSettingsPanelVisible) {
+    console.log('✅ Settings panel is already visible. Proceeding to extract selectors.');
+  } else {
+    // If not visible, try to toggle it
+    console.log('⚠️ Settings panel not visible by default. Attempting to toggle...');
+    
+    // Use the ID for the toggle button for more robustness
+    const toggleButtonSelector = '#settings-toggle'; 
+    await page.waitForSelector(toggleButtonSelector, { timeout: 10000 }); // Increased timeout for button to appear
+    await page.click(toggleButtonSelector); // Directly click the button
+    
+    // Wait for the panel to become visible after clicking the toggle button
+    await page.waitForSelector('#settings-panel', { timeout: 10000 }); // Increased timeout for panel to appear
+    console.log('✅ Settings panel is now visible. Extracting selectors...');
+  }
+} catch (err) {
+  console.warn('⚠️ Could not ensure settings panel visibility:', err.message);
+  console.warn('   Selectors within the settings panel might be missing from the snapshot.');
+}
 
-            // Only save if selector present
-            if (Object.keys(entry).length > 0) {
-                entry.tagName = el.tagName.toLowerCase();
-                entry.textContent = el.textContent.trim().slice(0, 100); // first 100 chars
-                result.push(entry);
-            }
-        });
+// --- MODIFICATION END ---
 
-        return result;
-    });
+// Extract all elements with IDs
+const selectors = await page.evaluate(() => {
+  return Array.from(document.querySelectorAll('[id]')).map(el => ({
+    selector: `#${el.id}`,
+    html: el.outerHTML
+  }));
+});
 
-    // Save result
-    const outputPath = process.argv[2] || 'snapshots/baseline-selectors.json';
-    writeFileSync(outputPath, JSON.stringify(selectors, null, 2));
-    console.log(`✅ Selectors saved to ${outputPath} (${selectors.length} entries)`);
+console.log(`💾 Saving selectors to ${outputFile}`);
+await fs.writeFile(outputFile, JSON.stringify(selectors, null, 2));
 
-    await browser.close();
-})();
+await browser.close();
+console.log('✅ Selectors extracted successfully.');

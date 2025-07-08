@@ -1,73 +1,107 @@
-import fs from 'fs';
-import path from 'path';
+// compare-selectors.js
+import fs from 'fs/promises';
 
-const baselinePath = 'snapshots/baseline-selectors.json';
-const currentPath = 'snapshots/current-selectors.json';
-const mappingPath = 'selector-mapping.json';
+const [,, baselineFile, currentFile] = process.argv;
+const MAPPING_PATH = 'selector-mapping.json';
 
-// ✅ If no baseline — show message, exit cleanly (Git workflow safe)
-if (!fs.existsSync(baselinePath)) {
-    console.log('⚠️ No baseline selectors found!');
-    console.log('👉 Please run:');
-    console.log('   npm run extract-selectors');
-    console.log('👉 Then save as: snapshots/baseline-selectors.json');
-    process.exit(1);
+if (!baselineFile || !currentFile) {
+  console.error('❌ Usage: node compare-selectors.js <baseline> <current>');
+  process.exit(1);
 }
 
-const baseline = JSON.parse(fs.readFileSync(baselinePath, 'utf8'));
-const current = JSON.parse(fs.readFileSync(currentPath, 'utf8'));
-
-// Build lookup maps for selectors by id/class
-function buildSelectorMap(arr) {
+function buildSelectorMap(data) {
+  if (Array.isArray(data)) {
     const map = {};
-    arr.forEach(sel => {
-        if (sel.id) map[sel.id] = sel;
-        else if (sel.class) map[sel.class] = sel;
+    data.forEach(({ selector, html }) => {
+      if (selector) map[selector] = html || '';
     });
     return map;
+  }
+  return data;
 }
 
-const baselineMap = buildSelectorMap(baseline);
-const currentMap = buildSelectorMap(current);
+function selToName(selector) {
+  return selector.replace(/^#|^\./, '').replace(/[-_](.)/g, (_, char) => char.toUpperCase());
+}
 
-const mapping = {};
-const added = [];
-const removed = [];
+function htmlSimilarity(html1, html2) {
+  if (!html1 || !html2) return 0;
+  const norm1 = html1.replace(/\s+/g, '');
+  const norm2 = html2.replace(/\s+/g, '');
+  let matches = 0;
+  for (let i = 0; i < Math.min(norm1.length, norm2.length); i++) {
+    if (norm1[i] === norm2[i]) matches++;
+  }
+  return matches / Math.max(norm1.length, norm2.length);
+}
 
-console.log('\n🔍 Comparing selectors...');
+try {
+  const [baselineRaw, currentRaw] = await Promise.all([
+    fs.readFile(baselineFile, 'utf8'),
+    fs.readFile(currentFile, 'utf8'),
+  ]);
 
-// Check for removed or changed selectors
-for (const key in baselineMap) {
-    if (!(key in currentMap)) {
-        removed.push(key);
-        mapping[key] = null;
-        console.log(`❌ REMOVED: ${key}`);
+  const baseline = buildSelectorMap(JSON.parse(baselineRaw));
+  const current = buildSelectorMap(JSON.parse(currentRaw));
+
+  let selectorMapping = {};
+  try {
+    selectorMapping = JSON.parse(await fs.readFile(MAPPING_PATH, 'utf8'));
+  } catch {
+    console.warn('⚠️ No existing selector-mapping.json found.');
+  }
+
+  const baselineKeys = Object.keys(baseline);
+  const currentKeys = Object.keys(current);
+
+  let changes = 0;
+
+  for (const baseSel of baselineKeys) {
+    const baseHTML = baseline[baseSel];
+
+    // Direct match
+    if (current[baseSel]) continue;
+
+    // Try to find a similar one
+    let bestMatch = null;
+    let bestScore = 0;
+
+    for (const currSel of currentKeys) {
+      if (selectorMapping[baseSel] === currSel) continue;
+      const score = htmlSimilarity(baseHTML, current[currSel]);
+      if (score > bestScore && score > 0.5) {
+        bestScore = score;
+        bestMatch = currSel;
+      }
+    }
+
+    if (bestMatch) {
+      console.log(`🔁 Mapping changed selector: ${baseSel} → ${bestMatch}`);
+      selectorMapping[baseSel] = bestMatch;
+      changes++;
     } else {
-        // Compare selector objects (shallow)
-        const oldSel = baselineMap[key];
-        const newSel = currentMap[key];
-        if (JSON.stringify(oldSel) !== JSON.stringify(newSel)) {
-            // Store only the selector string (id or class)
-            mapping[key] = newSel.id || newSel.class;
-            console.log(`🔄 CHANGED: ${key} → ${mapping[key]}`);
-        } else {
-            mapping[key] = newSel.id || newSel.class;
-        }
+      console.log(`❌ Removed selector (no match): ${baseSel}`);
+      selectorMapping[baseSel] = null;
     }
-}
+  }
 
-// Check for added selectors
-for (const key in currentMap) {
-    if (!(key in baselineMap)) {
-        added.push(key);
-        mapping[`ADDED: ${key}`] = currentMap[key].id || currentMap[key].class;
-        console.log(`➕ ADDED: ${key}`);
+  // Add new selectors
+  for (const currSel of currentKeys) {
+    if (!baseline[currSel] && !Object.values(selectorMapping).includes(currSel)) {
+      console.log(`➕ New selector added: ${currSel}`);
+      selectorMapping[`ADDED: ${currSel}`] = currSel;
+      changes++;
     }
+  }
+
+  if (changes > 0) {
+    await fs.writeFile(MAPPING_PATH, JSON.stringify(selectorMapping, null, 2), 'utf8');
+    console.log(`✅ Updated ${MAPPING_PATH} with ${changes} change(s).`);
+  } else {
+    console.log('✅ No selector changes detected.');
+  }
+
+} catch (err) {
+  console.error(`❌ Error comparing selectors: ${err.message}`);
+  process.exit(1);
 }
-
-// Save mapping
-fs.writeFileSync(mappingPath, JSON.stringify(mapping, null, 2));
-
-console.log('\n✅ Selector mapping saved to selector-mapping.json');
-console.log(`➕ Added: ${added.length}   ❌ Removed: ${removed.length}`);
-console.log('🎉 Compare done!');
