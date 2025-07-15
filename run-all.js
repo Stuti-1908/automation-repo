@@ -60,7 +60,7 @@ async function main() {
         // Step 5 (Optional): Run tests to validate the changes
         console.log('🧪 Running tests (optional step)...');
         // Note: This assumes you have a test command configured in your package.json
-        // await runScript('npm run test'); 
+        await runScript('npm run test'); 
 
         console.log('\n🎉 Workflow completed successfully!');
         console.log('\n💡 To accept the new changes as the source of truth, manually copy `snapshots/current-selectors.json` to `snapshots/baseline-selectors.json` and commit the result.');

@@ -22,8 +22,7 @@ exports.config = {
     reporters: ['spec'],
     cucumberOpts: {
         require: [
-            './features/steps.js',
-            './features/auto-generated-steps.js'
+            './features/step-definitions/*.js'
         ],
         backtrace: false,
         requireModule: [],

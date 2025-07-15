@@ -29,7 +29,6 @@ const {
 // Convert exclusion patterns to RegExp objects for efficient checking
 const exclusionRegexes = crawlExclusionPatterns.map(pattern => new RegExp(pattern));
 
-// --- Main Logic ---
 async function main() {
   // Determine the actual output file based on command line argument or config default
   const finalOutputFile = process.argv[2] || outputFile; // Use command line arg if provided
