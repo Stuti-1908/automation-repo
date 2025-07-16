@@ -1,3 +1,5 @@
+// CourseraBusinessesPage.js
+
 class CourseraBusinessesPage {
   get navBar() { return $('[data-testid="navbar-businesses"]'); }
   get heroHeading() { return $('h1=Make talent your competitive advantage'); }

@@ -1,31 +1,42 @@
-import { expect } from '@wdio/globals';
+// features/step-definitions/steps.js
+
+// Switched from 'require' to 'import' to match the page objects
 import { Given, When, Then } from '@wdio/cucumber-framework';
+import { expect } from '@wdio/globals';
+
 import CourseraHomePage from '../pageobjects/CourseraHomePage.js';
+import CourseraBusinessesPage from '../pageobjects/CourseraBusinessesPage.js';
+import CourseraUniversitiesPage from '../pageobjects/CourseraUniversitiesPage.js';
+import CourseraGovernmentsPage from '../pageobjects/CourseraGovernmentsPage.js';
 
-Given('I am on the CourseraClone homepage', async () => {
-  await CourseraHomePage.open();
+const pages = {
+    homepage: CourseraHomePage,
+    business: CourseraBusinessesPage,
+    universities: CourseraUniversitiesPage,
+    governments: CourseraGovernmentsPage
+};
+
+Given(/^I am on the CourseraClone homepage$/, async () => {
+    await browser.url('http://localhost:5173');
 });
 
-When('I click on "For Businesses"', async () => {
-  await CourseraHomePage.forBusinesses.click();
+When(/^I navigate to the "([^\"]+)" page$/, async (page) => {
+    const links = {
+        homepage: '/',
+        business: '/page2',
+        universities: '/page3',
+        governments: '/page4'
+    };
+    await browser.url(`http://localhost:5173${links[page]}`);
 });
 
-Then('I should be on the Businesses page', async () => {
-  expect(await browser.getUrl()).toContain('/page2');
-});
-
-When('I click on "For Universities"', async () => {
-  await CourseraHomePage.forUniversities.click();
-});
-
-Then('I should be on the Universities page', async () => {
-  expect(await browser.getUrl()).toContain('/page3');
-});
-
-When('I click on "For Governments"', async () => {
-  await CourseraHomePage.forGovernments.click();
-});
-
-Then('I should be on the Governments page', async () => {
-  expect(await browser.getUrl()).toContain('/page4');
+Then(/^I should be on the "([^\"]+)" page$/, async (page) => {
+    const paths = {
+        homepage: '/',
+        business: '/page2',
+        universities: '/page3',
+        governments: '/page4'
+    };
+    const url = await browser.getUrl();
+    expect(url).toContain(paths[page]);
 });

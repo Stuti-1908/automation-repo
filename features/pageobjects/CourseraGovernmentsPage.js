@@ -1,3 +1,4 @@
+//CourseraGovernmentsPage.js
 class CourseraGovernmentsPage {
   get navBar() { return $('[data-testid="navbar-governments"]'); }
   get heroHeading() { return $('h1=Equip citizens and government employees with in-demand skills'); }

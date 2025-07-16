@@ -1,10 +1,4 @@
 exports.config = {
-    autoCompileOpts: {
-    tsNodeOpts: {
-      transpileOnly: true,
-      project: './tsconfig.json'
-    },
-    },
     runner: 'local',
     specs: [
         './features/**/*.feature'
@@ -21,18 +15,7 @@ exports.config = {
     framework: 'cucumber',
     reporters: ['spec'],
     cucumberOpts: {
-        require: [
-            './features/step-definitions/*.js'
-        ],
-        backtrace: false,
-        requireModule: [],
-        dryRun: false,
-        failFast: false,
-        snippets: true,
-        source: true,
-        strict: false,
-        tagExpression: '',
+        require: ['./features/step-definitions/steps.js'],
         timeout: 60000,
-        ignoreUndefinedDefinitions: false
-    }
+    },
 };
