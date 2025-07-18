@@ -5,5 +5,10 @@ node_modules/
 clonedRepo/
 report/
 selector-history.json
-*.log
 .env
+node_modules/
+dist/
+allure-results/
+allure-report/
+*.log
+.DS_Store

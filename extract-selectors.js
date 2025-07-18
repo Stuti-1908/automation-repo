@@ -97,59 +97,48 @@ async function main() {
       }
 
       // --- Selector Extraction ---
-      const pageSelectors = await page.evaluate((currentPagePath, currentPageUrlFull, selectorsToFind) => {
-        const extracted = [];
-        const uniqueSelectorsFound = new Set();
+      const pageSelectors = await page.evaluate((currentPagePath, currentPageUrlFull) => {
+  const extracted = [];
+  const uniqueSelectorsFound = new Set();
 
-        selectorsToFind.forEach(selectorQuery => {
-          Array.from(document.querySelectorAll(selectorQuery)).forEach(el => {
-            let selector = '';
-            let type = '';
+  Array.from(document.querySelectorAll('*')).forEach(el => {
+    let selector = '';
+    let type = '';
 
-            if (el.id) {
-              selector = `#${el.id}`;
-              type = 'id';
-            } else if (el.hasAttribute('data-test-id')) {
-              selector = `[data-test-id="${el.getAttribute('data-test-id')}"]`;
-              type = 'data-test-id';
-            } else if (el.hasAttribute('data-qa')) {
-              selector = `[data-qa="${el.getAttribute('data-qa')}"]`;
-              type = 'data-qa';
-            } else if (el.hasAttribute('data-cy')) {
-              selector = `[data-cy="${el.getAttribute('data-cy')}"]`;
-              type = 'data-cy';
-            } else if (el.className) {
-              const meaningfulClasses = el.className.split(/\s+/)
+    if (el.id) {
+      selector = `#${el.id}`;
+      type = 'id';
+    } else if (el.hasAttribute('data-testid')) {
+      selector = `[data-testid="${el.getAttribute('data-testid')}"]`;
+      type = 'data-testid';
+    } else if (el.className) {
+      const meaningfulClasses = el.className.split(/\s+/)
                                         .filter(cls => cls && !cls.startsWith('copilot-') && !cls.startsWith('animate-') && !cls.startsWith('flex') && !cls.startsWith('p-') && !cls.startsWith('m-'));
-              if (meaningfulClasses.length > 0) {
-                  selector = `.${meaningfulClasses[0]}`;
-                  type = 'class';
-              } else {
-                  const allClasses = el.className.split(/\s+/).filter(Boolean);
-                  if (allClasses.length > 0) {
-                      selector = `.${allClasses[0]}`;
-                      type = 'class';
-                  }
-              }
-            } else {
-              selector = el.tagName.toLowerCase();
-              type = 'tag';
-            }
+      if (meaningfulClasses.length > 0) {
+          selector = `.${meaningfulClasses[0]}`;
+          type = 'class';
+      } else {
+          const allClasses = el.className.split(/\s+/).filter(Boolean);
+          if (allClasses.length > 0) {
+              selector = `.${allClasses[0]}`;
+              type = 'class';
+          }
+      }
+    }
 
-            if (selector && !uniqueSelectorsFound.has(selector)) {
-              extracted.push({
-                pagePath: currentPagePath,
-                pageUrl: currentPageUrlFull,
-                selectorType: type,
-                selector: selector,
-                html: el.outerHTML
-              });
-              uniqueSelectorsFound.add(selector);
-            }
-          });
-        });
-        return extracted;
-      }, urlPath, currentUrl, selectorsToExtract);
+    if (selector && !uniqueSelectorsFound.has(selector)) {
+      extracted.push({
+        pagePath: currentPagePath,
+        pageUrl: currentPageUrlFull,
+        selectorType: type,
+        selector: selector,
+        html: el.outerHTML
+      });
+      uniqueSelectorsFound.add(selector);
+    }
+  });
+  return extracted;
+}, urlPath, currentUrl);
 
       if (pageSelectors.length > 0) {
         allExtractedSelectors.push(...pageSelectors);
